@@ -5,7 +5,6 @@ Creates a time-expanded graph from a grid map and visualizes it.
 
 import networkx as nx
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 
 def create_time_expanded_graph(m, n, T):
@@ -123,8 +122,8 @@ def visualize_time_expanded_graph_3d(G, m, n, T):
     for node in G.nodes():
         x, y, t = node
         node_positions.append([x, y, t])
-        # Color nodes by time step
-        node_colors.append(t / T)
+        # Color nodes by time step (handle T=0 case)
+        node_colors.append(t / T if T > 0 else 0)
     
     # Draw nodes
     node_positions = list(zip(*node_positions))
@@ -155,8 +154,8 @@ def visualize_time_expanded_graph_3d(G, m, n, T):
                 fontsize=13, pad=20)
     
     # Set axis limits
-    ax.set_xlim(-0.5, m - 0.5)
-    ax.set_ylim(-0.5, n - 0.5)
+    ax.set_xlim(-0.5, n - 0.5)
+    ax.set_ylim(-0.5, m - 0.5)
     ax.set_zlim(-0.5, T + 0.5)
     
     # Add grid
