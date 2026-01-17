@@ -5,6 +5,7 @@ Creates a time-expanded graph from a grid map and visualizes it.
 
 import networkx as nx
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 
 def create_time_expanded_graph(m, n, T):
@@ -94,6 +95,89 @@ def create_layout(G, m, n, T):
     return pos
 
 
+def visualize_time_expanded_graph_3d(G, m, n, T):
+    """
+    Visualize the time-expanded graph in 3D using matplotlib.
+    X-axis: x coordinate
+    Y-axis: y coordinate
+    Z-axis: time (t)
+    
+    Parameters:
+    -----------
+    G : nx.DiGraph
+        The time-expanded graph
+    m : int
+        Grid height
+    n : int
+        Grid width
+    T : int
+        Maximum time steps
+    """
+    fig = plt.figure(figsize=(12, 10))
+    ax = fig.add_subplot(111, projection='3d')
+    
+    # Prepare node positions and colors
+    node_positions = []
+    node_colors = []
+    
+    for node in G.nodes():
+        x, y, t = node
+        node_positions.append([x, y, t])
+        # Color nodes by time step
+        node_colors.append(t / T)
+    
+    # Draw nodes
+    node_positions = list(zip(*node_positions))
+    ax.scatter(node_positions[0], node_positions[1], node_positions[2],
+              c=node_colors, cmap='viridis', s=100, alpha=0.8, 
+              edgecolors='black', linewidths=0.5)
+    
+    # Draw edges
+    for edge in G.edges():
+        x1, y1, t1 = edge[0]
+        x2, y2, t2 = edge[1]
+        
+        # Distinguish between waiting edges and movement edges
+        if x1 == x2 and y1 == y2:
+            # Waiting edge (vertical line in time)
+            ax.plot([x1, x2], [y1, y2], [t1, t2], 
+                   'b-', alpha=0.3, linewidth=1)
+        else:
+            # Movement edge
+            ax.plot([x1, x2], [y1, y2], [t1, t2], 
+                   'r-', alpha=0.3, linewidth=0.8)
+    
+    # Set labels and title
+    ax.set_xlabel('X Coordinate', fontsize=11)
+    ax.set_ylabel('Y Coordinate', fontsize=11)
+    ax.set_zlabel('Time (t)', fontsize=11)
+    ax.set_title(f'3D Time-Expanded Graph for {m}×{n} Grid with T={T}', 
+                fontsize=13, pad=20)
+    
+    # Set axis limits
+    ax.set_xlim(-0.5, m - 0.5)
+    ax.set_ylim(-0.5, n - 0.5)
+    ax.set_zlim(-0.5, T + 0.5)
+    
+    # Add grid
+    ax.grid(True, alpha=0.3)
+    
+    # Add colorbar
+    sm = plt.cm.ScalarMappable(cmap='viridis', 
+                               norm=plt.Normalize(vmin=0, vmax=T))
+    sm.set_array([])
+    cbar = plt.colorbar(sm, ax=ax, pad=0.1, shrink=0.8)
+    cbar.set_label('Time Step', fontsize=10)
+    
+    # Adjust viewing angle
+    ax.view_init(elev=20, azim=45)
+    
+    plt.tight_layout()
+    plt.savefig('time_expanded_graph_3d.png', dpi=300, bbox_inches='tight')
+    print("3D Graph saved as 'time_expanded_graph_3d.png'")
+    plt.show()
+
+
 def visualize_time_expanded_graph(G, pos, m, n, T):
     """
     Visualize the time-expanded graph using matplotlib.
@@ -157,12 +241,16 @@ def main():
     
     print(f"Graph created with {G.number_of_nodes()} nodes and {G.number_of_edges()} edges.")
     
-    # Create layout
+    # Create layout for 2D visualization
     pos = create_layout(G, m, n, T)
     
-    # Visualize the graph
-    print("Visualizing the graph...")
+    # Visualize the graph in 2D
+    print("Visualizing the graph in 2D...")
     visualize_time_expanded_graph(G, pos, m, n, T)
+    
+    # Visualize the graph in 3D
+    print("Visualizing the graph in 3D...")
+    visualize_time_expanded_graph_3d(G, m, n, T)
     
     print("Done!")
 

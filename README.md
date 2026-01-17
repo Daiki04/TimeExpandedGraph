@@ -18,10 +18,18 @@ Time-Expanded Graph (TEG) は、空間と時間を組み合わせたグラフ構
   - **待機エッジ**: 時刻 t の地点 (x, y) から、時刻 t+1 の同じ地点 (x, y) への有向エッジ
 
 - **可視化**:
-  - 横軸: 時間 (t)
-  - 縦軸: 空間（格子内の位置を1列に並べたもの）
-  - ノードラベル: (x, y, t) 形式
-  - 有向グラフとして描画
+  - **2D可視化**:
+    - 横軸: 時間 (t)
+    - 縦軸: 空間（格子内の位置を1列に並べたもの）
+    - ノードラベル: (x, y, t) 形式
+    - 有向グラフとして描画
+  - **3D可視化**:
+    - X軸: x座標
+    - Y軸: y座標
+    - Z軸: 時間 (t)
+    - ノードは時間ステップで色分け
+    - 青い線: 待機エッジ（同じ位置に留まる）
+    - 赤い線: 移動エッジ（隣接する位置への移動）
 
 ## インストール
 
@@ -41,6 +49,13 @@ python time_expanded_graph.py
 
 実行すると、`time_expanded_graph.png` というファイルが生成され、グラフが保存されます。
 
+## 出力ファイル
+
+スクリプトは以下の2つのファイルを生成します：
+
+1. **time_expanded_graph.png**: 2D可視化（時間を横軸、空間位置を縦軸としたレイアウト）
+2. **time_expanded_graph_3d.png**: 3D可視化（X-Y平面が空間座標、Z軸が時間）
+
 ## 出力例
 
 スクリプトを実行すると、以下のような出力が表示されます：
@@ -48,8 +63,10 @@ python time_expanded_graph.py
 ```
 Creating Time-Expanded Graph for 3×3 grid with T=5...
 Graph created with 54 nodes and 165 edges.
-Visualizing the graph...
+Visualizing the graph in 2D...
 Graph saved as 'time_expanded_graph.png'
+Visualizing the graph in 3D...
+3D Graph saved as 'time_expanded_graph_3d.png'
 Done!
 ```
 
@@ -65,7 +82,8 @@ Done!
 - `time_expanded_graph.py`: メインスクリプト
 - `requirements.txt`: 必要なパッケージ
 - `README.md`: このファイル
-- `time_expanded_graph.png`: 生成される可視化画像
+- `time_expanded_graph.png`: 生成される2D可視化画像
+- `time_expanded_graph_3d.png`: 生成される3D可視化画像
 
 ## 要件
 
